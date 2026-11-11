@@ -6,6 +6,7 @@ import { defineConfig } from "vite";
 const plugins = [react(), tailwindcss()];
 
 export default defineConfig({
+  base: process.env.GITHUB_PAGES === "true" ? "/elysian/" : "/",
   plugins,
   resolve: {
     alias: {

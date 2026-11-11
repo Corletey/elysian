@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Route, Switch } from "wouter";
+import { Route, Router as RouterContext, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Home, { NotFound } from "./pages/Home";
 import About from "./pages/About";
@@ -21,7 +21,7 @@ const seo:Record<string,{title:string;description:string}>={
   "/faqs":{title:"Surrogacy FAQs | Elysian Surrogacy",description:"Clear answers about surrogacy, surrogate support, timing, medical coordination, and gamete shipping."},
   "/contact":{title:"Contact Elysian Surrogacy | Start a Conversation",description:"Contact Elysian Surrogacy to explore family-building support or specialist gamete and embryo shipping."}
 };
-function SeoManager(){useEffect(()=>{const current=seo[window.location.pathname]||seo["/"];document.title=current.title;let meta=document.querySelector('meta[name="description"]');if(meta)meta.setAttribute("content",current.description);},[]);return null;}
-function Router(){return <Switch><Route path="/" component={Home}/><Route path="/about" component={About}/><Route path="/services" component={Services}/><Route path="/process" component={Process}/><Route path="/partners" component={Partners}/><Route path="/intended-parents" component={IntendedParents}/><Route path="/surrogates" component={Surrogates}/><Route path="/faqs" component={FAQs}/><Route path="/contact" component={Contact}/><Route path="/404" component={NotFound}/><Route component={NotFound}/></Switch>}
+function SeoManager(){useEffect(()=>{const base=import.meta.env.BASE_URL;const pathname=window.location.pathname.startsWith(base)?`/${window.location.pathname.slice(base.length)}`.replace(/^\/$/,"/"):window.location.pathname;const current=seo[pathname]||seo["/"];document.title=current.title;let meta=document.querySelector('meta[name="description"]');if(meta)meta.setAttribute("content",current.description);},[]);return null;}
+function Router(){const base=import.meta.env.BASE_URL==="/" ? undefined : import.meta.env.BASE_URL.replace(/\/$/,"");return <RouterContext base={base}><Switch><Route path="/" component={Home}/><Route path="/about" component={About}/><Route path="/services" component={Services}/><Route path="/process" component={Process}/><Route path="/partners" component={Partners}/><Route path="/intended-parents" component={IntendedParents}/><Route path="/surrogates" component={Surrogates}/><Route path="/faqs" component={FAQs}/><Route path="/contact" component={Contact}/><Route path="/404" component={NotFound}/><Route component={NotFound}/></Switch></RouterContext>}
 export default function App(){return <ErrorBoundary><SeoManager/><Router/></ErrorBoundary>}
       
